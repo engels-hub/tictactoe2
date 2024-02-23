@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dark"
+    android:clipChildren="false"
+    tools:context=".PvPActivity">
+
+    <TextView
+        android:id="@+id/step"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cross"
+        android:textSize="34sp"
+        tools:layout_editor_absoluteX="44dp"
+        tools:layout_editor_absoluteY="54dp" />
+
+    <club.cred.synth.views.SynthButton
+        android:id="@+id/button_back"
+        android:layout_width="98dp"
+        android:layout_height="49dp"
+        android:layout_marginBottom="48dp"
+
+        android:gravity="center"
+        android:text="go back"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.846"
+        app:layout_constraintStart_toStartOf="parent"
+        app:neuButtonType="elevated_soft" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="#777777"
+        android:orientation="vertical"
+        android:padding="28dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <LinearLayout style="@style/row">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/a1"
+                style="@style/column" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/a2"
+                style="@style/column" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/a3"
+                style="@style/column" />
+        </LinearLayout>
+
+        <LinearLayout style="@style/row">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/b1"
+                style="@style/column" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/b2"
+                style="@style/column" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/b3"
+                style="@style/column" />
+        </LinearLayout>
+
+        <LinearLayout style="@style/row">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/c1"
+                style="@style/column" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/c2"
+                style="@style/column" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/c3"
+                style="@style/column" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
