@@ -5,94 +5,210 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dark"
+
+    android:tileMode="disabled"
+    android:gravity="top"
     android:clipChildren="false"
     tools:context=".PvCActivity">
 
 
-<TextView
-android:id="@+id/step"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text="Cross"
-android:textSize="34sp"
-tools:layout_editor_absoluteX="46dp"
-tools:layout_editor_absoluteY="589dp" />
-
-<club.cred.synth.views.SynthButton
-android:id="@+id/button_back"
-android:layout_width="98dp"
-android:layout_height="49dp"
-android:layout_marginBottom="48dp"
-
-android:gravity="center"
-android:text="go back"
-android:textAlignment="center"
-android:textAllCaps="false"
-android:textColor="@color/white"
-app:layout_constraintBottom_toBottomOf="parent"
-app:layout_constraintEnd_toEndOf="parent"
-app:layout_constraintHorizontal_bias="0.846"
-app:layout_constraintStart_toStartOf="parent"
-app:neuButtonType="elevated_soft" />
-
-<LinearLayout
-android:id="@+id/linearLayout"
-android:layout_width="match_parent"
-android:layout_height="0dp"
-android:background="#777777"
-android:orientation="vertical"
-android:padding="28dp"
-app:layout_constraintBottom_toBottomOf="parent"
-app:layout_constraintDimensionRatio="1:1"
-app:layout_constraintLeft_toLeftOf="parent"
-app:layout_constraintRight_toRightOf="parent"
-app:layout_constraintTop_toTopOf="parent">
-
-
-<LinearLayout style="@style/row">
+    <TextView
+        android:id="@+id/step"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="casual"
+        android:text="Cross"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        android:layout_marginTop="-60dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/a1"
-        style="@style/column" />
+        android:id="@+id/button_back"
+        android:layout_width="98dp"
+        android:layout_height="49dp"
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/a2"
-        style="@style/column" />
+        android:layout_marginTop="34dp"
+        android:layout_marginBottom="40dp"
+        android:background="@android:color/transparent"
+        android:fontFamily="casual"
+        android:gravity="center"
+        android:text="@string/go_back"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textColor="@color/dark"
+        android:textSize="20sp"
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/a3"
-        style="@style/column" />
-</LinearLayout>
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/step" />
 
-<LinearLayout style="@style/row">
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="160dp"
+        android:layout_marginBottom="18dp"
+        android:background="@drawable/cross_black1"
+        android:orientation="vertical"
+        android:padding="28dp"
+        app:layout_constraintBottom_toTopOf="@+id/step"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/b1"
-        style="@style/column" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/b2"
-        style="@style/column" />
+        <LinearLayout style="@style/row">
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/b3"
-        style="@style/column" />
-</LinearLayout>
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/a1"
+                style="@style/column" />
 
-<LinearLayout style="@style/row">
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/a2"
+                style="@style/column" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/c1"
-        style="@style/column" />
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/a3"
+                style="@style/column" />
+        </LinearLayout>
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/c2"
-        style="@style/column" />
+        <LinearLayout style="@style/row">
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/c3"
-        style="@style/column" />
-</LinearLayout>
-</LinearLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/b1"
+                style="@style/column" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/b2"
+                style="@style/column" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/b3"
+                style="@style/column" />
+        </LinearLayout>
+
+        <LinearLayout style="@style/row">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/c1"
+                style="@style/column" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/c2"
+                style="@style/column" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/c3"
+                style="@style/column" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:translationZ="-100dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/blank_bg" />
+<!--    style="@style/row"-->
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:gravity="top"
+        android:orientation="horizontal"
+        android:padding="20dp"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <LinearLayout
+            android:id="@+id/player_card"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="30"
+            android:clickable="false"
+            android:clipChildren="false"
+
+            android:orientation="vertical">
+            <!--            android:background="@drawable/player_bg"-->
+
+            <ImageView
+                android:id="@+id/playerAvatarImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|top"
+                android:adjustViewBounds="true"
+                android:backgroundTint="@color/dark"
+                android:maxWidth="160dp"
+                android:maxHeight="160dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintDimensionRatio="1:1"
+                app:srcCompat="@drawable/cross_avatar" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:fontFamily="casual"
+                android:text="Player"
+                android:textSize="26sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="40"
+            android:clipChildren="false" />
+
+        <LinearLayout
+            android:id="@+id/comp_card"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="30"
+            android:clipChildren="false"
+            android:orientation="vertical">
+
+
+            <ImageView
+                android:id="@+id/PCAvatarImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:adjustViewBounds="true"
+                android:backgroundTint="@color/dark"
+                android:maxWidth="160dp"
+                android:maxHeight="160dp"
+                android:rotation="90"
+                android:scaleType="centerCrop"
+                app:layout_constraintDimensionRatio="1:1"
+                app:srcCompat="@drawable/nought_avatar" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:fontFamily="casual"
+
+                android:text="PeeCee"
+                android:textSize="26sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+    <!--    how do I make ImageView stretch to match parent height but maintain aspect ratio in Android?-->
+</androidx.constraintlayout.widget.ConstraintLayout>
