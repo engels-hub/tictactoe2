@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">tictactoe2</string>
     <string name="go_back"><u>go back</u></string>
+    <string name="pvc"><u>PvC</u></string>
+    <string name="hello">Hello,</string>
+    <string name="pvp"><u>PvP</u></string>
+    <string name="tic_tac_toe"><u>Tic Tac Toe</u></string>
+    <string name="credits">By AP</string>
 </resources>

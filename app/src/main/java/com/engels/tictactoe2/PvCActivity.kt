@@ -5,9 +5,12 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -25,17 +28,24 @@ class PvCActivity: AppCompatActivity(), View.OnClickListener {
         val randomValues = List(9) { Random.nextInt(0, 5) }
         var rngIterator=0
         var isPlayer=true;
+        var firstPlayerName="Player1"
+        var playerInputName=true
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pvc)
         isPlayer = intent.getBooleanExtra("player", true)
+        firstPlayerName=intent.getStringExtra("name")!!
+        val playerName=findViewById<TextView>(R.id.player1Name)
+        playerName.text = firstPlayerName
+        Log.d("NAME", firstPlayerName)
         rngIterator=0
         currentPlayer=true
         animatePadding()
         val buttonBack: Button = findViewById(R.id.button_back);
         buttonBack.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
+            intent.putExtra("name", firstPlayerName)
             startActivity(intent)
         }
 
@@ -55,11 +65,46 @@ class PvCActivity: AppCompatActivity(), View.OnClickListener {
                 IDList[board[y][x]!!.button.id]= Pair(x,y)
             }
         }
+
+
+        if(!isPlayer){
+            val editText=findViewById<EditText>(R.id.player2)
+            val player2name=findViewById<TextView>(R.id.pcName)
+            player2name.visibility = View.GONE
+            editText.visibility = View.VISIBLE
+            editText.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    // This function is called after the text has changed
+                    // You can access the new text using `s.toString()`
+
+                    // Perform actions based on the new text, like validation or updates
+
+                    player2name.text= s.toString()
+                }
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    // This function is called before the text is changed
+                    // You can use this for actions before changes, like saving previous state
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    // This function is called every time the text changes
+                    // You can use this for real-time processing, like filtering suggestions
+                }
+            })
+        }
+
     }
 
     @SuppressLint("SetTextI18n")
     override fun onClick(v: View?) {
-
+        if(playerInputName && !isPlayer){
+            val player2input=findViewById<EditText>(R.id.player2)
+            val player2name=findViewById<TextView>(R.id.pcName)
+            playerInputName=false
+            player2input.visibility = View.GONE
+            player2name.visibility = View.VISIBLE
+        }
         val text = findViewById<TextView>(R.id.step)
         if ((v as Button).text.isNotEmpty()) return
         val coords = IDList[v.id]
