@@ -1,21 +1,29 @@
 package com.engels.tictactoe2
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        val prefName = "TicTacToePlayerName"
+        val playerNamePreferences = "playerName"
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val buttonPvP: Button = findViewById(R.id.button_pve);
         var playerName="Player"
+        val sharedPreferences = getSharedPreferences(prefName, Context.MODE_PRIVATE)
+        val retrievedName = sharedPreferences.getString(playerNamePreferences, null)
         val editText = findViewById<EditText>(R.id.player_name_input)
+        editText.setText(retrievedName)
         if(intent.getStringExtra("name")!=null){
             playerName= intent.getStringExtra("name")!!
             editText.setText(playerName)
@@ -31,6 +39,9 @@ class MainActivity : AppCompatActivity() {
                 playerName = s.toString()
                 // Perform actions based on the new text, like validation or updates
 
+                val editor = sharedPreferences.edit()
+                editor.putString(playerNamePreferences, playerName)
+                editor.apply()
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -56,5 +67,8 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra("name",playerName)
             startActivity(intent)
         }
+
+
+
     }
 }
