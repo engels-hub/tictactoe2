@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import kotlinx.coroutines.delay
 import kotlin.random.Random
 
 
@@ -23,10 +24,12 @@ class PvCActivity: AppCompatActivity(), View.OnClickListener {
         var IDList:LinkedHashMap<Int,Pair<Int,Int>> = LinkedHashMap()
         val randomValues = List(9) { Random.nextInt(0, 5) }
         var rngIterator=0
+        var isPlayer=true;
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pvc)
+        isPlayer = intent.getBooleanExtra("player", true)
         rngIterator=0
         currentPlayer=true
         animatePadding()
@@ -36,15 +39,15 @@ class PvCActivity: AppCompatActivity(), View.OnClickListener {
             startActivity(intent)
         }
 
-        board[0][0]=Tile(findViewById<Button>(R.id.a1), null, false,)
-        board[0][1]=Tile(findViewById<Button>(R.id.a2), null, false,)
-        board[0][2]=Tile(findViewById<Button>(R.id.a3), null, false,)
-        board[1][0]=Tile(findViewById<Button>(R.id.b1), null, false,)
-        board[1][1]=Tile(findViewById<Button>(R.id.b2), null, false,)
-        board[1][2]=Tile(findViewById<Button>(R.id.b3), null, false,)
-        board[2][0]=Tile(findViewById<Button>(R.id.c1), null, false,)
-        board[2][1]=Tile(findViewById<Button>(R.id.c2), null, false,)
-        board[2][2]=Tile(findViewById<Button>(R.id.c3), null, false,)
+        board[0][0]=Tile(findViewById<Button>(R.id.a1), null, false)
+        board[0][1]=Tile(findViewById<Button>(R.id.a2), null, false)
+        board[0][2]=Tile(findViewById<Button>(R.id.a3), null, false)
+        board[1][0]=Tile(findViewById<Button>(R.id.b1), null, false)
+        board[1][1]=Tile(findViewById<Button>(R.id.b2), null, false)
+        board[1][2]=Tile(findViewById<Button>(R.id.b3), null, false)
+        board[2][0]=Tile(findViewById<Button>(R.id.c1), null, false)
+        board[2][1]=Tile(findViewById<Button>(R.id.c2), null, false)
+        board[2][2]=Tile(findViewById<Button>(R.id.c3), null, false)
 
         for (y in board.indices) {
             for (x in board[y].indices) {
@@ -91,7 +94,7 @@ class PvCActivity: AppCompatActivity(), View.OnClickListener {
             text.text="${if (currentPlayer) "Cross" else "Nought"} won!!"
             return
         }
-        if(rngIterator>=9){
+        if(rngIterator==9){
             text.text="Tie!"
             for (i in board.indices) {
                 for (j in board[i].indices) {
@@ -103,63 +106,88 @@ class PvCActivity: AppCompatActivity(), View.OnClickListener {
         currentPlayer = !currentPlayer
         animatePadding()
 
+        if(!currentPlayer && isPlayer){
 
+            aiMove()
+            animatePadding()
+        }
 
 
     }
     private fun checkWinConditions(x:Int, y:Int): Boolean? {
 
-        //check if diag is possible in that point
-        Log.d("X", x.toString())
-        Log.d("Y", y.toString())
-        printMatrix()
-        if(board[1][1]!!.captured == currentPlayer) {
-            if(x==0 && y==0 && (board[2][2]!!.captured== currentPlayer)) {
-                board[0][0]!!.line=true
-                board[1][1]!!.line=true
-                board[2][2]!!.line=true
-                paintTiles()
-                return currentPlayer
-            }
-            if(x==2 && y==2 && (board[0][0]!!.captured== currentPlayer)){
-                board[0][0]!!.line=true
-                board[1][1]!!.line=true
-                board[2][2]!!.line=true
-                paintTiles()
-                return currentPlayer
-            }
-            if(x==0 && y==2 && (board[0][2]!!.captured== currentPlayer)){
-                board[2][0]!!.line=true
-                board[1][1]!!.line=true
-                board[0][2]!!.line=true
-                paintTiles()
-                return currentPlayer
-            }
-            if(x==2 && y==0 && (board[2][0]!!.captured== currentPlayer)){
-                board[2][0]!!.line=true
-                board[1][1]!!.line=true
-                board[0][2]!!.line=true
-                paintTiles()
-                return currentPlayer
-            }
-        }
-//TODO:might be xy-yx bug, check that
+        val testArray=arrayOf(
+            arrayOf(board[0][0]!!,board[0][1]!!,board[0][2]!!),
+            arrayOf(board[1][0]!!,board[1][1]!!,board[1][2]!!),
+            arrayOf(board[2][0]!!,board[2][1]!!,board[2][2]!!),
+
+            arrayOf(board[0][0]!!,board[1][0]!!,board[2][0]!!),
+            arrayOf(board[0][1]!!,board[1][1]!!,board[2][1]!!),
+            arrayOf(board[0][2]!!,board[1][2]!!,board[2][2]!!),
+
+            arrayOf(board[0][0]!!,board[1][1]!!,board[2][2]!!),
+            arrayOf(board[2][0]!!,board[1][1]!!,board[0][2]!!),
 
 
-        if(board[0][x]!!.captured== currentPlayer && board[1][x]!!.captured== currentPlayer && board[2][x]!!.captured== currentPlayer) {
-            board[0][x]!!.line = true
-            board[1][x]!!.line = true
-            board[2][x]!!.line = true
-            paintTiles()
-            return currentPlayer
+        )
+
+
+        forLoop@for( i in testArray.indices){
+            Log.d("CHECK",i.toString())
+            for(j in testArray[i].indices){
+                if(testArray[i][j].captured==null) continue@forLoop
+            }
+            if(testArray[i][0].captured==testArray[i][1].captured && testArray[i][1].captured==testArray[i][2].captured){
+                testArray[i][0].line = true
+                testArray[i][1].line = true
+                testArray[i][2].line = true
+                paintTiles()
+                return testArray[i][2].captured
+            }
         }
-        if(board[y][0]!!.captured== currentPlayer && board[y][1]!!.captured== currentPlayer && board[y][2]!!.captured== currentPlayer){
-            board[y][0]!!.line=true
-            board[y][1]!!.line=true
-            board[y][2]!!.line=true
-            paintTiles()
-            return currentPlayer
-        }
+
+//        //check if diag is possible in that point
+//        Log.d("X", x.toString())
+//        Log.d("Y", y.toString())
+//        printMatrix()
+//
+//        if(!(board[1][1]!!.captured==null||board[0][0]!!.captured==null||board[2][2]!!.captured==null)){
+//            Log.d("CHECK","D1")
+//            if(board[1][1]!!.captured==board[0][0]!!.captured && board[0][0]!!.captured==board[2][2]!!.captured){
+//                board[0][0]!!.line = true
+//                board[1][1]!!.line = true
+//                board[2][2]!!.line = true
+//                paintTiles()
+//                return board[1][1]!!.captured
+//            }
+//        }
+//
+//        if(!(board[1][1]!!.captured==null||board[2][0]!!.captured==null||board[0][2]!!.captured==null)){
+//            Log.d("CHECK","D2")
+//            if(board[1][1]!!.captured==board[2][0]!!.captured && board[0][0]!!.captured==board[2][0]!!.captured){
+//                board[2][0]!!.line = true
+//                board[1][1]!!.line = true
+//                board[0][2]!!.line = true
+//                paintTiles()
+//                return board[1][1]!!.captured
+//            }
+//        }
+//
+//
+//        if(board[0][x]!!.captured== currentPlayer && board[1][x]!!.captured== currentPlayer && board[2][x]!!.captured== currentPlayer) {
+//            board[0][x]!!.line = true
+//            board[1][x]!!.line = true
+//            board[2][x]!!.line = true
+//            paintTiles()
+//            return currentPlayer
+//        }
+//        if(board[y][0]!!.captured== currentPlayer && board[y][1]!!.captured== currentPlayer && board[y][2]!!.captured== currentPlayer){
+//            board[y][0]!!.line=true
+//            board[y][1]!!.line=true
+//            board[y][2]!!.line=true
+//            paintTiles()
+//            return currentPlayer
+//        }
 
 
         return null
@@ -193,7 +221,7 @@ class PvCActivity: AppCompatActivity(), View.OnClickListener {
     }
 
 
-    fun animatePadding() {
+    private fun animatePadding() {
         val animator = ValueAnimator.ofInt(0, 100)
 
 
@@ -217,4 +245,138 @@ class PvCActivity: AppCompatActivity(), View.OnClickListener {
 
         animator.start()
     }
+
+    private fun aiMove(){
+        Thread.sleep(500)
+        animatePadding()
+        //find empty tiles
+        val emptyTiles = mutableListOf<Pair<Int,Int>>()
+        for (i in board.indices){
+            for (j in board[i].indices) {
+                if(board[i][j]!!.captured==null){
+                    emptyTiles.add(Pair(i,j))
+                }
+            }
+        }
+        //emptyTiles.shuffle()
+
+        emptyTiles.forEach {
+
+            val x=it.second
+            val y=it.first
+            //check horizontal
+            Log.d("AISTEP", "${y} ${x}")
+
+            if(x==0 && !(board[y][1]!!.captured == null || board[y][2]!!.captured == null)){
+                if (board[y][1]!!.captured == board[y][2]!!.captured) {
+                    Log.d("AI", "X")
+                    aiButtonPress(y, x)
+                    return
+                }
+            }
+            if(x==1 && !(board[y][0]!!.captured == null || board[y][2]!!.captured == null)){
+
+                if (board[y][0]!!.captured == board[y][2]!!.captured) {
+                    aiButtonPress(y, x)
+                    Log.d("AI", "X")
+                    return
+                }
+            }
+            if(x==2 && !(board[y][0]!!.captured == null || board[y][1]!!.captured == null)){
+                if (board[y][0]!!.captured == board[y][1]!!.captured) {
+                    aiButtonPress(y, x)
+                    Log.d("AI", "X")
+                    return
+                }
+            }
+
+
+            //check y
+
+            if(y==0 && !(board[1][x]!!.captured==null||board[2][x]!!.captured==null)){
+                if(board[1][x]!!.captured==board[2][x]!!.captured) {
+                    aiButtonPress(y,x)
+                    Log.d("AI", "Y")
+                    return
+                }
+            }
+            if(y==1 && !(board[0][x]!!.captured==null||board[2][x]!!.captured==null)){
+                if(board[0][x]!!.captured==board[2][x]!!.captured) {
+                    aiButtonPress(y,x)
+                    Log.d("AI", "Y")
+                    return
+                }
+            }
+            if(y==2 && !(board[0][x]!!.captured==null||board[1][x]!!.captured==null)){
+                if(board[0][x]!!.captured==board[1][x]!!.captured) {
+                    aiButtonPress(y,x)
+                    Log.d("AI", "Y")
+                    return
+                }
+            }
+
+            //00
+            if(x==0 && y==0)
+                if(board[1][1]!!.captured!=null||board[2][2]!!.captured!=null)
+                    if(board[1][1]!!.captured==board[2][2]!!.captured){
+                        aiButtonPress(0,0)
+                        Log.d("AI", "D")
+                        return
+                    }
+            //02
+            if(x==0 && y==2)
+                if(board[1][1]!!.captured!=null||board[0][2]!!.captured!=null)
+                    if(board[1][1]!!.captured==board[0][2]!!.captured){
+                        aiButtonPress(2,0)
+                        Log.d("AI", "D")
+                        return
+                    }
+            //11
+            if(x==1 && y==1){
+                if(board[0][0]!!.captured!=null||board[2][2]!!.captured!=null)
+                    if(board[0][0]!!.captured==board[2][2]!!.captured){
+                        aiButtonPress(1,1)
+                        Log.d("AI", "D")
+                        return
+                    }
+                if(board[0][2]!!.captured!=null||board[2][0]!!.captured!=null)
+                    if(board[0][2]!!.captured==board[2][0]!!.captured){
+                        aiButtonPress(1,1)
+                        Log.d("AI", "D")
+                        return
+                    }
+            }
+            //20
+            if(x==2 && y==0)
+                if(board[1][1]!!.captured!=null||board[2][0]!!.captured!=null)
+                    if(board[1][1]!!.captured==board[2][0]!!.captured){
+                        aiButtonPress(0,2)
+                        Log.d("AI", "D")
+                        return
+                    }
+            //22
+            if(x==2 && y==2)
+                if(board[1][1]!!.captured!=null||board[0][0]!!.captured!=null)
+                    if(board[1][1]!!.captured==board[0][0]!!.captured){
+                        aiButtonPress(2,2)
+                        Log.d("AI", "D")
+                        return
+                    }
+        }
+        //random move
+        val randomItem=emptyTiles.random()
+        Log.d("AI", "RAND")
+        aiButtonPress(randomItem.first,randomItem.second)
+        return
+    }
+
+    private fun aiButtonPress(i: Int, j:Int){
+        val v = board[i][j]!!.button;
+        v.performClick()
+        return
+    }
+
 }
+
+
+
