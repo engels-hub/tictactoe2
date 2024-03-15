@@ -31,7 +31,6 @@ This is a mid-term project for my uni course, a game of TicTactoe, written in Ko
 
 - Multiple themes
 
-- Add comments everywhere
 
 
 ## Acknowledgements
