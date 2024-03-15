@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val buttonPvP: Button = findViewById(R.id.button_pve);
+        val buttonPvP: Button = findViewById(R.id.button_pve)
         var playerName="Player"
         val sharedPreferences = getSharedPreferences(prefName, Context.MODE_PRIVATE)
         val retrievedName = sharedPreferences.getString(playerNamePreferences, null)
@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra("name",playerName)
             startActivity(intent)
         }
-        val buttonPvE: Button = findViewById(R.id.button_pvp);
+        val buttonPvE: Button = findViewById(R.id.button_pvp)
         buttonPvE.setOnClickListener {
             val intent = Intent(this, PvCActivity::class.java)
             intent.putExtra("player", false)

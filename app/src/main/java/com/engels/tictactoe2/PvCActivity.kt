@@ -1,7 +1,6 @@
 package com.engels.tictactoe2
 
 import android.animation.ValueAnimator
-import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -31,7 +30,8 @@ class PvCActivity: AppCompatActivity(), View.OnClickListener {
         val randomValues = List(9) { Random.nextInt(0, 5) }
         var rngIterator=0
         //bool for switching between pvp and pvc
-        var notPlayer=true;
+        var notPlayer=true
+
         //placeholder for first player name
         var firstPlayerName="Player1"
         //bool for allowing second player input
@@ -55,7 +55,7 @@ class PvCActivity: AppCompatActivity(), View.OnClickListener {
         animatePadding()
 
         //"home" button
-        val buttonBack: Button = findViewById(R.id.button_back);
+        val buttonBack: Button = findViewById(R.id.button_back)
         buttonBack.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             intent.putExtra("name", firstPlayerName)
@@ -90,7 +90,6 @@ class PvCActivity: AppCompatActivity(), View.OnClickListener {
     }
     private fun setSecondPlayerName() {
         if (!notPlayer) {
-            Log.d("A", "Mogus")
             val player2input = findViewById<EditText>(R.id.player2)
             val player2name = findViewById<TextView>(R.id.pcName)
             if(player2input.text.toString().isEmpty()) player2name.text=
@@ -104,15 +103,15 @@ class PvCActivity: AppCompatActivity(), View.OnClickListener {
     }
     private fun assignButtons(){
         //assign UI buttons to board
-        board[0][0]=Tile(findViewById<Button>(R.id.a1), null, false)
-        board[0][1]=Tile(findViewById<Button>(R.id.a2), null, false)
-        board[0][2]=Tile(findViewById<Button>(R.id.a3), null, false)
-        board[1][0]=Tile(findViewById<Button>(R.id.b1), null, false)
-        board[1][1]=Tile(findViewById<Button>(R.id.b2), null, false)
-        board[1][2]=Tile(findViewById<Button>(R.id.b3), null, false)
-        board[2][0]=Tile(findViewById<Button>(R.id.c1), null, false)
-        board[2][1]=Tile(findViewById<Button>(R.id.c2), null, false)
-        board[2][2]=Tile(findViewById<Button>(R.id.c3), null, false)
+        board[0][0]=Tile(findViewById(R.id.a1), null, false)
+        board[0][1]=Tile(findViewById(R.id.a2), null, false)
+        board[0][2]=Tile(findViewById(R.id.a3), null, false)
+        board[1][0]=Tile(findViewById(R.id.b1), null, false)
+        board[1][1]=Tile(findViewById(R.id.b2), null, false)
+        board[1][2]=Tile(findViewById(R.id.b3), null, false)
+        board[2][0]=Tile(findViewById(R.id.c1), null, false)
+        board[2][1]=Tile(findViewById(R.id.c2), null, false)
+        board[2][2]=Tile(findViewById(R.id.c3), null, false)
 
         //flatten board 2d array
         for (y in board.indices) {
@@ -163,7 +162,7 @@ class PvCActivity: AppCompatActivity(), View.OnClickListener {
         rngIterator++
 
         //check if current player won
-        val win = checkWinConditions(coords.first, coords.second)
+        val win = checkWinConditions()
 
         //win can be true, false (for player win conditions) and null for no win detected
         if(win!=null){
@@ -198,7 +197,6 @@ class PvCActivity: AppCompatActivity(), View.OnClickListener {
     }
 
     private fun displayWinner(text: TextView) {
-        val name: String
         if (currentPlayer) {
             text.text = getString(R.string.cross_won)
         } else {
@@ -209,7 +207,7 @@ class PvCActivity: AppCompatActivity(), View.OnClickListener {
 
 
 
-    private fun checkWinConditions(x:Int, y:Int): Boolean? {
+    private fun checkWinConditions(): Boolean? {
 
         val testArray=arrayOf(
             arrayOf(board[0][0]!!,board[0][1]!!,board[0][2]!!),
@@ -260,7 +258,7 @@ class PvCActivity: AppCompatActivity(), View.OnClickListener {
     private fun printMatrix(){
         //test purposes
         for (i in board.indices) {
-            var arrayTest = arrayOf<Boolean?>(null,null,null)
+            val arrayTest = arrayOf<Boolean?>(null,null,null)
             for (j in board[i].indices) {
                 arrayTest[j]= board[i][j]!!.captured
             }
@@ -277,11 +275,11 @@ class PvCActivity: AppCompatActivity(), View.OnClickListener {
         val v1:LinearLayout
         val v2:LinearLayout
         if(currentPlayer){
-             v1=findViewById<LinearLayout>(R.id.player_card)
-             v2=findViewById<LinearLayout>(R.id.comp_card)
+             v1=findViewById(R.id.player_card)
+             v2=findViewById(R.id.comp_card)
         }else{
-             v1=findViewById<LinearLayout>(R.id.comp_card)
-             v2=findViewById<LinearLayout>(R.id.player_card)
+             v1=findViewById(R.id.comp_card)
+             v2=findViewById(R.id.player_card)
         }
         animator.addUpdateListener { valueAnimator ->
             val animatedValue = valueAnimator.animatedValue as Int
@@ -417,7 +415,7 @@ class PvCActivity: AppCompatActivity(), View.OnClickListener {
     }
 
     private fun aiButtonPress(i: Int, j:Int){
-        val v = board[i][j]!!.button;
+        val v = board[i][j]!!.button
         v.performClick()
         return
     }
