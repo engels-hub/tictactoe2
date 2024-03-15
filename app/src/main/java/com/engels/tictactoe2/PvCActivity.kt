@@ -14,7 +14,6 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import kotlinx.coroutines.delay
 import kotlin.random.Random
 
 
@@ -23,25 +22,39 @@ class PvCActivity: AppCompatActivity(), View.OnClickListener {
         var board: Array<Array<Tile?>> = Array(3) { Array(3){
             null
         } }
+        //bool for switching players
         var currentPlayer=true
+        //list of buttons to loop through
         var IDList:LinkedHashMap<Int,Pair<Int,Int>> = LinkedHashMap()
+
+        //rng for XO texturing
         val randomValues = List(9) { Random.nextInt(0, 5) }
         var rngIterator=0
-        var isPlayer=true;
+        //bool for switching between pvp and pvc
+        var notPlayer=true;
+        //placeholder for first player name
         var firstPlayerName="Player1"
+        //bool for allowing second player input
         var playerInputName=true
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pvc)
-        isPlayer = intent.getBooleanExtra("player", true)
+
+        //getting args from MainActivity
+        notPlayer = intent.getBooleanExtra("player", true)
         firstPlayerName=intent.getStringExtra("name")!!
+
+        //changing first player name
         val playerName=findViewById<TextView>(R.id.player1Name)
         playerName.text = firstPlayerName
-        Log.d("NAME", firstPlayerName)
+
+        //first player moves
         rngIterator=0
         currentPlayer=true
         animatePadding()
+
+        //"home" button
         val buttonBack: Button = findViewById(R.id.button_back);
         buttonBack.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
@@ -49,6 +62,48 @@ class PvCActivity: AppCompatActivity(), View.OnClickListener {
             startActivity(intent)
         }
 
+        assignButtons()
+
+        //switch to pvp mode
+        if (!notPlayer) {
+            assignSecondPlayerName()
+        }
+
+    }
+
+    private fun assignSecondPlayerName() {
+            //hide player placeholder name, show input field
+            val editText = findViewById<EditText>(R.id.player2)
+            val player2name = findViewById<TextView>(R.id.pcName)
+            player2name.visibility = View.GONE
+            editText.visibility = View.VISIBLE
+
+
+            editText.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    player2name.text = s.toString()
+                }
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            })
+    }
+    private fun setSecondPlayerName() {
+        if (!notPlayer) {
+            Log.d("A", "Mogus")
+            val player2input = findViewById<EditText>(R.id.player2)
+            val player2name = findViewById<TextView>(R.id.pcName)
+            if(player2input.text.toString().isEmpty()) player2name.text=
+                getString(R.string.player_2_default)
+            //disable further input
+            playerInputName = false
+            //hide input, show changed name
+            player2input.visibility = View.GONE
+            player2name.visibility = View.VISIBLE
+        }
+    }
+    private fun assignButtons(){
+        //assign UI buttons to board
         board[0][0]=Tile(findViewById<Button>(R.id.a1), null, false)
         board[0][1]=Tile(findViewById<Button>(R.id.a2), null, false)
         board[0][2]=Tile(findViewById<Button>(R.id.a3), null, false)
@@ -59,56 +114,31 @@ class PvCActivity: AppCompatActivity(), View.OnClickListener {
         board[2][1]=Tile(findViewById<Button>(R.id.c2), null, false)
         board[2][2]=Tile(findViewById<Button>(R.id.c3), null, false)
 
+        //flatten board 2d array
         for (y in board.indices) {
             for (x in board[y].indices) {
                 board[y][x]!!.button.setOnClickListener(this)
                 IDList[board[y][x]!!.button.id]= Pair(x,y)
             }
         }
-
-
-        if(!isPlayer){
-            val editText=findViewById<EditText>(R.id.player2)
-            val player2name=findViewById<TextView>(R.id.pcName)
-            player2name.visibility = View.GONE
-            editText.visibility = View.VISIBLE
-            editText.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) {
-                    // This function is called after the text has changed
-                    // You can access the new text using `s.toString()`
-
-                    // Perform actions based on the new text, like validation or updates
-
-                    player2name.text= s.toString()
-                }
-
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                    // This function is called before the text is changed
-                    // You can use this for actions before changes, like saving previous state
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    // This function is called every time the text changes
-                    // You can use this for real-time processing, like filtering suggestions
-                }
-            })
-        }
-
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onClick(v: View?) {
-        if(playerInputName && !isPlayer){
-            val player2input=findViewById<EditText>(R.id.player2)
-            val player2name=findViewById<TextView>(R.id.pcName)
-            playerInputName=false
-            player2input.visibility = View.GONE
-            player2name.visibility = View.VISIBLE
-        }
+
+        //when game starts, freeze second player name
+        setSecondPlayerName()
+
         val text = findViewById<TextView>(R.id.step)
+
+        //if tile is already occupied
         if ((v as Button).text.isNotEmpty()) return
+
+        //change tile in board matrix
         val coords = IDList[v.id]
         board[coords!!.second][coords.first]!!.captured = currentPlayer
+
+
+        //draw X or O in tile
         v.backgroundTintList = null
         if (currentPlayer) {
             when(randomValues[rngIterator]){
@@ -132,33 +162,53 @@ class PvCActivity: AppCompatActivity(), View.OnClickListener {
         }
         rngIterator++
 
+        //check if current player won
         val win = checkWinConditions(coords.first, coords.second)
-        Log.d("TAG", win.toString())
-        //text.text= if(currentPlayer) "Cross" else "Nought" + if(win!=null)" wins!" else ""
+
+        //win can be true, false (for player win conditions) and null for no win detected
         if(win!=null){
-            text.text="${if (currentPlayer) "Cross" else "Nought"} won!!"
+            displayWinner(text)
             return
         }
+        //determine tie situation
         if(rngIterator==9){
-            text.text="Tie!"
-            for (i in board.indices) {
-                for (j in board[i].indices) {
-                    board[i][j]!!.button.setOnClickListener(null)
-                }
-            }
+            text.text= getString(R.string.tie)
+            removeButtonListeners()
             return
         }
+        //prepare for next move
         currentPlayer = !currentPlayer
         animatePadding()
 
-        if(!currentPlayer && isPlayer){
-
+        //let ai move in pvc mode
+        if(!currentPlayer && notPlayer){
             aiMove()
             animatePadding()
         }
 
 
     }
+
+    private fun removeButtonListeners() {
+        for (i in board.indices) {
+            for (j in board[i].indices) {
+                board[i][j]!!.button.setOnClickListener(null)
+            }
+        }
+    }
+
+    private fun displayWinner(text: TextView) {
+        val name: String
+        if (currentPlayer) {
+            text.text = getString(R.string.cross_won)
+        } else {
+            text.text = getString(R.string.nought_won)
+        }
+        return
+    }
+
+
+
     private fun checkWinConditions(x:Int, y:Int): Boolean? {
 
         val testArray=arrayOf(
@@ -191,66 +241,19 @@ class PvCActivity: AppCompatActivity(), View.OnClickListener {
             }
         }
 
-//        //check if diag is possible in that point
-//        Log.d("X", x.toString())
-//        Log.d("Y", y.toString())
-//        printMatrix()
-//
-//        if(!(board[1][1]!!.captured==null||board[0][0]!!.captured==null||board[2][2]!!.captured==null)){
-//            Log.d("CHECK","D1")
-//            if(board[1][1]!!.captured==board[0][0]!!.captured && board[0][0]!!.captured==board[2][2]!!.captured){
-//                board[0][0]!!.line = true
-//                board[1][1]!!.line = true
-//                board[2][2]!!.line = true
-//                paintTiles()
-//                return board[1][1]!!.captured
-//            }
-//        }
-//
-//        if(!(board[1][1]!!.captured==null||board[2][0]!!.captured==null||board[0][2]!!.captured==null)){
-//            Log.d("CHECK","D2")
-//            if(board[1][1]!!.captured==board[2][0]!!.captured && board[0][0]!!.captured==board[2][0]!!.captured){
-//                board[2][0]!!.line = true
-//                board[1][1]!!.line = true
-//                board[0][2]!!.line = true
-//                paintTiles()
-//                return board[1][1]!!.captured
-//            }
-//        }
-//
-//
-//        if(board[0][x]!!.captured== currentPlayer && board[1][x]!!.captured== currentPlayer && board[2][x]!!.captured== currentPlayer) {
-//            board[0][x]!!.line = true
-//            board[1][x]!!.line = true
-//            board[2][x]!!.line = true
-//            paintTiles()
-//            return currentPlayer
-//        }
-//        if(board[y][0]!!.captured== currentPlayer && board[y][1]!!.captured== currentPlayer && board[y][2]!!.captured== currentPlayer){
-//            board[y][0]!!.line=true
-//            board[y][1]!!.line=true
-//            board[y][2]!!.line=true
-//            paintTiles()
-//            return currentPlayer
-//        }
-
-
         return null
     }
 
     private fun paintTiles(){
-        Log.d("WIN", "WIN")
-        //paint won tiles, later replace with more complex logic
+        printMatrix()
+        //tint won tiles, later maybe replace with more complex logic
+        removeButtonListeners()
         for (i in board.indices) {
-            var arrayTest = arrayOf<Boolean>(false,false,false)
             for (j in board[i].indices) {
-                arrayTest[j]= board[i][j]!!.line
-                board[i][j]!!.button.setOnClickListener(null)
                 if(board[i][j]!!.line)
                     board[i][j]!!.button.backgroundTintList = ContextCompat.getColorStateList(
                         this, R.color.green)
             }
-            println(arrayTest.contentToString())
         }
     }
 
@@ -303,14 +306,12 @@ class PvCActivity: AppCompatActivity(), View.OnClickListener {
                 }
             }
         }
-        //emptyTiles.shuffle()
 
         emptyTiles.forEach {
 
             val x=it.second
             val y=it.first
             //check horizontal
-            Log.d("AISTEP", "${y} ${x}")
 
             if(x==0 && !(board[y][1]!!.captured == null || board[y][2]!!.captured == null)){
                 if (board[y][1]!!.captured == board[y][2]!!.captured) {
@@ -336,7 +337,7 @@ class PvCActivity: AppCompatActivity(), View.OnClickListener {
             }
 
 
-            //check y
+            //check vertical
 
             if(y==0 && !(board[1][x]!!.captured==null||board[2][x]!!.captured==null)){
                 if(board[1][x]!!.captured==board[2][x]!!.captured) {

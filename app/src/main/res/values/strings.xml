@@ -6,4 +6,8 @@
     <string name="pvp"><u>PvP</u></string>
     <string name="tic_tac_toe"><u>Tic Tac Toe</u></string>
     <string name="credits">By AP</string>
+    <string name="nought_won">Nought won!</string>
+    <string name="cross_won">Cross won!</string>
+    <string name="tie">Tie!</string>
+    <string name="player_2_default">Player 2</string>
 </resources>

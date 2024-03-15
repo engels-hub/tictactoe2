@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity() {
         var playerName="Player"
         val sharedPreferences = getSharedPreferences(prefName, Context.MODE_PRIVATE)
         val retrievedName = sharedPreferences.getString(playerNamePreferences, null)
+        if(retrievedName!=null) playerName=retrievedName
         val editText = findViewById<EditText>(R.id.player_name_input)
         editText.setText(retrievedName)
         if(intent.getStringExtra("name")!=null){
